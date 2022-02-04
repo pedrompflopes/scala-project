@@ -9,13 +9,10 @@ env:
 
 jobs:
   run:
-    name: Build and Run
-    strategy:
-      matrix:
-        java-version: [8, 11, 17]
+    name: Scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout current branch (full)
+      - name: Checkout current branch
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -24,19 +21,16 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: temurin
-          java-version: ${{ matrix.java-version }}
+          java-version: 8
 
-      - name: Cache sbt
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.sbt
-            ~/.ivy2/cache
-            ~/.coursier/cache/v1
-            ~/.cache/coursier/v1
-            ~/AppData/Local/Coursier/Cache/v1
-            ~/Library/Caches/Coursier/v1
-          key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+      - name: Download SCA Resolver
+        run: |
+          wget https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz
+          tar -xzvf ScaResolver-linux64.tar.gz
+          rm -rf ScaResolver-linux64.tar.gz
 
-      - name: Run project
-        run: sbt run
+      - name: Run SCA Resolver in offline mode
+        run: |
+          ./ScaResolver offline -s . -r .cxsca-results.json --scan-containers
+          rm -rf ./ScaResolver
+          cat .cxsca-results.json
