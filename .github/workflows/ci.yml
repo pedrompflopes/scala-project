@@ -22,10 +22,6 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: SBT Compile
-        run: |
-          sbt dependencyDot
-
       - name: Download SCA Resolver
         run: |
           wget https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz
@@ -34,6 +30,6 @@ jobs:
 
       - name: Run SCA Resolver in offline mode
         run: |
-          ./ScaResolver offline -s . -r .cxsca-results.json --scan-containers
-          rm -rf ./ScaResolver
+          ./ScaResolver offline -s . -r .cxsca-results.json --log-level Debug --scan-containers
+          rm -rf ./ScaResolver 
           cat .cxsca-results.json
