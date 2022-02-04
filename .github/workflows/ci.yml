@@ -24,7 +24,7 @@ jobs:
 
       - name: SBT Compile
         run: |
-          sbt compile
+          sbt dependencyDot
 
       - name: Download SCA Resolver
         run: |
