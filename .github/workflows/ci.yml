@@ -22,6 +22,10 @@ jobs:
           distribution: temurin
           java-version: 8
 
+      - name: SBT Compile
+        run: |
+          sbt compile
+
       - name: Download SCA Resolver
         run: |
           wget https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz
